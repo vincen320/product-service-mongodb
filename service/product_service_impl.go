@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/go-redis/redis/v8"
 	"github.com/jinzhu/copier"
 	"github.com/vincen320/product-service-mongodb/exception"
 	"github.com/vincen320/product-service-mongodb/model/domain"
@@ -18,13 +19,15 @@ type ProductServiceImpl struct {
 	Repository repository.ProductRepository
 	Validator  *validator.Validate
 	DB         *mongo.Database
+	RDB        *redis.Client
 }
 
-func NewProductService(repository repository.ProductRepository, validator *validator.Validate, db *mongo.Database) ProductService {
+func NewProductService(repository repository.ProductRepository, validator *validator.Validate, db *mongo.Database, rdb *redis.Client) ProductService {
 	return &ProductServiceImpl{
 		Repository: repository,
 		Validator:  validator,
 		DB:         db,
+		RDB:        rdb,
 	}
 }
 
@@ -258,7 +261,7 @@ func (ps *ProductServiceImpl) FindById(ctx context.Context, idProduct primitive.
 	return response, nil
 }
 
-func (ps *ProductServiceImpl) FindAll(ctx context.Context) ([]web.ProductResponse, error) {
+func (ps *ProductServiceImpl) FindAll(ctx context.Context) (web.ProductResponses, error) {
 	var responses []web.ProductResponse
 	var foundProducts []domain.Product
 

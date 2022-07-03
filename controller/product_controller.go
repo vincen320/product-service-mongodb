@@ -8,4 +8,6 @@ type ProductController interface {
 	Delete(c *gin.Context)
 	FindById(c *gin.Context)
 	FindAll(c *gin.Context)
+	FindByIdCache(c *gin.Context)
+	FindAllCache(c *gin.Context)
 }

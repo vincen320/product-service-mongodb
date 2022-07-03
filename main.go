@@ -21,9 +21,10 @@ func main() {
 		panic(err)
 	}
 
+	rdb := app.ConnectRedis()
 	validator := validator.New()
 	productRepository := repository.NewProductRespository()
-	productService := service.NewProductService(productRepository, validator, db)
+	productService := service.NewProductService(productRepository, validator, db, rdb)
 	productController := controller.NewProductController(productService)
 
 	router := gin.New()
@@ -38,6 +39,8 @@ func main() {
 	}
 	router.GET("products/:idProduct", productController.FindById)
 	router.GET("products", productController.FindAll)
+	router.GET("products/cache/:idProduct", productController.FindByIdCache)
+	router.GET("products/cache", productController.FindAllCache)
 
 	server := http.Server{
 		Addr:           ":8082",
