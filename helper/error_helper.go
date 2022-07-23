@@ -12,14 +12,14 @@ import (
 	"github.com/vincen320/product-service-mongodb/model/web"
 )
 
-var (
-	badRequest      *exception.BadRequestError
-	notFound        *exception.NotFoundError
-	unauthorized    *exception.UnauthorizedError
-	validationError *validator.ValidationErrors
-)
-
 func ReturnError(c *gin.Context, e error) {
+	var (
+		badRequest      *exception.BadRequestError
+		notFound        *exception.NotFoundError
+		unauthorized    *exception.UnauthorizedError
+		validationError validator.ValidationErrors
+	)
+
 	log.Println(reflect.TypeOf(e))
 	if errors.As(e, &badRequest) {
 		ErrorResponse(c, http.StatusBadRequest, badRequest.Error())
